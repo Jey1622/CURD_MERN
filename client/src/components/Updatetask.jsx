@@ -3,15 +3,15 @@ import React, { useState } from "react";
 import axiosInstance from "../axiosInstancs";
 function Updatetask(props) {
   const [task, setTask] = useState(props.task.todo);
-  const updateTask = () => {
+
+  const updateTask =async () => {
     if (task.trim() === "" || props.task.todo === task) {
       props.removePopup();
     } else {
-      axiosInstance
-        .put(`http://localhost:4000/api/tasks/${props.task._id}`, {
-          _id: props.task._id,
-          todo: task,
-          isComplete: props.task.isComplete,
+      await axiosInstance
+        .put(`http://localhost:4000/api/tasks/${props.task.id}`, {
+          id: props.task.id,
+          todo: task
         })
         .then((res) => {
           props.removePopup();

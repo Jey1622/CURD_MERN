@@ -9,8 +9,7 @@ function AddTask(props) {
     } else {
       axiosInstance
         .post("http://localhost:4000/api/tasks", {
-          todo: task,
-          isComplete: false,
+          todo: task
         })
         .then((res) => {
           Settask("");

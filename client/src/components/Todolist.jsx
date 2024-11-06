@@ -7,18 +7,17 @@ import axiosInstance from "../axiosInstancs";
 
 function Todolist(props) {
   const todolist = props.todolist.map((task, index) => {
-    const taskComplete = (task) => {
-      axiosInstance
-        .put(`http://localhost:4000/api/tasks/${task._id}`, {
-          _id: task._id,
-          todo: task.todo,
-          isComplete: !task.isComplete,
+    const taskComplete =async (task) => {
+     await axiosInstance
+        .put(`http://localhost:4000/api/tasks/${task.id}`, {
+          id: task.id,
+          todo: task.todo
         })
         .then((res) => props.taskComplete(res.data))
         .catch((err) => console.log(err));
     };
-    const removeTask = (id) => {
-      axiosInstance
+    const removeTask = async (id) => {
+     await axiosInstance
         .delete(`http://localhost:4000/api/tasks/${id}`)
         .then((res) => props.removeTask(res.data))
         .catch((err) => console.log(err));
@@ -26,13 +25,7 @@ function Todolist(props) {
     return (
       <li key={index}>
         <div style={{ display: "flex" }}>
-          <CheckIcon className={task.isComplete ? "isComplete" : "checkicon"} />
-          <p
-            className={task.isComplete ? "taskcomplete" : ""}
-            onClick={() => {
-              taskComplete(task);
-            }}
-          >
+          <p>
             {task.todo}
           </p>
         </div>
@@ -47,7 +40,7 @@ function Todolist(props) {
           <CloseIcon
             className="close"
             onClick={() => {
-              removeTask(task._id);
+              removeTask(task.id);
             }}
           />
         </div>
