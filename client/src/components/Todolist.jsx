@@ -6,52 +6,54 @@ import CloseIcon from "@mui/icons-material/Close";
 import axiosInstance from "../axiosInstancs";
 
 function Todolist(props) {
-  const todolist = props.todolist.map((task, index) => {
-    const taskComplete =async (task) => {
-     await axiosInstance
-        .put(`http://localhost:4000/api/tasks/${task.id}`, {
+  const Todolist = ({ todolist, taskComplete, removeTask, tasktoUpdate, showPopup }) => {
+
+    // Moved the functions outside of the map for efficiency
+    const updateTask = async (task) => {
+      try {
+        const res = await axiosInstance.put(`http://localhost:4000/api/tasks/${task.id}`, {
           id: task.id,
           todo: task.todo
-        })
-        .then((res) => props.taskComplete(res.data))
-        .catch((err) => console.log(err));
+        });
+        taskComplete(res.data);
+      } catch (err) {
+        console.log(err);
+      }
     };
-    const removeTask = async (id) => {
-     await axiosInstance
-        .delete(`http://localhost:4000/api/tasks/${id}`)
-        .then((res) => props.removeTask(res.data))
-        .catch((err) => console.log(err));
+  
+    const deleteTask = async (id) => {
+      try {
+        const res = await axiosInstance.delete(`http://localhost:4000/api/tasks/${id}`);
+        removeTask(res.data);
+      } catch (err) {
+        console.log(err);
+      }
     };
+  
     return (
-      <li key={index}>
-        <div style={{ display: "flex" }}>
-          <p>
-            {task.todo}
-          </p>
-        </div>
-        <div>
-          <EditIcon
-            className="edit"
-            onClick={() => {
-              props.tasktoUpdate(task);
-              props.showPopup();
-            }}
-          />
-          <CloseIcon
-            className="close"
-            onClick={() => {
-              removeTask(task.id);
-            }}
-          />
-        </div>
-      </li>
+      <ul>
+        {todolist.map((task) => (
+          <li key={task._id}> 
+            <div style={{ display: "flex" }}>
+              <p>{task.todo}</p>
+            </div>
+            <div>
+              <EditIcon
+                className="edit"
+                onClick={() => {
+                  tasktoUpdate(task);
+                  showPopup();
+                }}
+              />
+              <CloseIcon
+                className="close"
+                onClick={() => deleteTask(task.id)} 
+              />
+            </div>
+          </li>
+        ))}
+      </ul>
     );
-  });
-  return (
-    <div className="tasklist">
-      <ul>{todolist}</ul>
-    </div>
-  );
+  };
 }
-
-export default Todolist;
+export default Todolist

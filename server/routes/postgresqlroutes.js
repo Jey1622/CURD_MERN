@@ -5,9 +5,9 @@ const con = require("../connnection");
 
 router.post("/", async (req, res) => {
   try {
-    const { todo } = req.body;
-
-    const insert_query = "insert into todolist (todo) values($1) returning *";
+    const  todo  = req.body.todo;
+    console.log(todo)
+    const insert_query = "insert into todolist (todo) values($1) ";
 
     const newtodo = await con.query(insert_query, [todo]);
     res.json(newtodo.rows[0]);

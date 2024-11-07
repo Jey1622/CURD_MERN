@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import axios from "axios";
 import AddTask from "./components/AddTask";
 import Todolist from "./components/Todolist";
 import Updatetask from "./components/Updatetask";
 import axiosInstance from "./axiosInstancs";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import NavigateBar from "./components/NavigateBar";
 
 function App() {
   const [todolist, setTodolist] = useState([]);
@@ -24,51 +27,50 @@ function App() {
     setTodolist([...todolist, newTask]);
   };
 
-  const taskComplete = (task) => {
-    const newList = [...todolist];
-    newList.forEach((item) => {
-      if (item._id === task.id) {
-        item.isComplete = task.isComplete;
-      }
-    });
-    setTodolist(newList);
-  };
   
+
   const removeTask = (task) => {
-    const newList = todolist.filter((item) => !(item._id === task.id));
+    const newList = todolist.filter((item) => !(item.id === task.id));
     setTodolist(newList);
   };
-
 
   const updatetask = (task) => {
-    const newList = [...todolist];
-    newList.forEach((item) => {
-      if (item.id === task.id) {
-        item.todo = task.todo;
-      }
-    });
-    console.log("clicked")
+    const newList = todolist.map((item) =>
+      item._id === task._id ? { ...item, todo: task.todo } : item
+    );
     setTodolist(newList);
   };
-
+    
+   
   return (
-    <div>
-      <AddTask addTask={addTask} />
-      <Todolist
+    <Router>
+      <NavigateBar />
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/tasks"
+          element={
+            <div>
+              <AddTask addTask={addTask} />
+              <Todolist
         todolist={todolist}
-        // taskComplete={taskComplete}
         removeTask={removeTask}
         tasktoUpdate={(task) => setTasktoUpdate(task)}
         showPopup={() => setShowPopup(!showPopup)}
       />
-      {showPopup && (
-        <Updatetask
-          task={tasktoUpdate}
-          updatetask={updatetask}
-          removePopup={() => setShowPopup(!showPopup)}
+              {showPopup && (
+                <Updatetask
+                  task={tasktoUpdate}
+                  updatetask={updatetask}
+                  removePopup={() => setShowPopup(false)}
+                />
+              )}
+            </div>
+          }
         />
-      )}
-    </div>
+      </Routes>
+    </Router>
   );
 }
 

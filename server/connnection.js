@@ -1,10 +1,13 @@
-const {Client}=require('pg')
-const con=new Client({
-    host:"localhost",
-    user:"postgres",
-    port:5432,
-    password:"1137",
-    database:"todo"
-  })
+const { Sequelize } = require('sequelize');
+require('dotenv').config();
 
-  module.exports=con;
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+  host: process.env.DB_HOST,
+  dialect: 'postgres',
+});
+
+sequelize.authenticate()
+  .then(() => console.log('Connected to PostgreSQL'))
+  .catch((err) => console.error('Unable to connect to PostgreSQL:', err));
+
+module.exports = sequelize;
